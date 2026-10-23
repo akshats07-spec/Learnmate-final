@@ -12,6 +12,7 @@ interface AuthContextValue {
   signOut: () => Promise<void>;
   signInWithGoogle: () => Promise<{ error: string | null }>;
   resetPassword: (email: string) => Promise<{ error: string | null }>;
+  updateProfile: (updates: { displayName?: string; studySubject?: string; studyStyle?: string }) => Promise<{ error: string | null }>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -26,8 +27,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const saved = localStorage.getItem("learnmate_user") || localStorage.getItem("learnmate_demo_user");
+      const customName = localStorage.getItem("learnmate_display_name");
       if (saved) {
-        setUser(JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        if (customName && parsed.user_metadata) {
+          parsed.user_metadata.display_name = customName;
+        }
+        setUser(parsed);
+      } else if (customName) {
+        const fallbackUser = {
+          id: `usr-${Date.now()}`,
+          email: "student@university.edu",
+          user_metadata: {
+            display_name: customName,
+            streak_days: 1,
+            study_minutes: 0,
+          },
+          app_metadata: {},
+          aud: "authenticated",
+          created_at: new Date().toISOString(),
+        } as unknown as User;
+        setUser(fallbackUser);
       }
     } catch (e) {
       console.warn("Could not read stored user:", e);
@@ -199,12 +219,88 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       localStorage.removeItem("learnmate_user");
       localStorage.removeItem("learnmate_demo_user");
+      localStorage.removeItem("learnmate_display_name");
+      localStorage.removeItem("learnmate_study_subject");
+      localStorage.removeItem("learnmate_study_style");
     } catch {}
     setUser(null);
     setSession(null);
-    if (!supabase) return;
-    await supabase.auth.signOut();
+    if (supabase) {
+      try {
+        await supabase.auth.signOut();
+      } catch {}
+    }
+    if (typeof window !== "undefined") {
+      window.location.href = "/";
+    }
   }, [supabase]);
+
+  const updateProfile = useCallback(async (updates: { displayName?: string; studySubject?: string; studyStyle?: string }) => {
+    const trimmedName = updates.displayName?.trim();
+
+    // 1. Try to sync with FastAPI Python SQLite backend
+    if (user?.email && trimmedName) {
+      try {
+        await fetch("/api/py/auth/profile", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: user.email, name: trimmedName }),
+        });
+      } catch (err) {
+        console.warn("Could not sync profile with backend:", err);
+      }
+    }
+
+    // 2. If Supabase is active, update user metadata
+    if (supabase && trimmedName) {
+      try {
+        await supabase.auth.updateUser({
+          data: { display_name: trimmedName }
+        });
+      } catch (err) {
+        console.warn("Could not sync profile with Supabase:", err);
+      }
+    }
+
+    // 3. Update localStorage and in-memory User state
+    setUser((prev) => {
+      const current = prev || ({
+        id: `usr-${Date.now()}`,
+        email: "student@university.edu",
+        user_metadata: {},
+        app_metadata: {},
+        aud: "authenticated",
+        created_at: new Date().toISOString(),
+      } as unknown as User);
+
+      const updated = {
+        ...current,
+        user_metadata: {
+          ...(current.user_metadata || {}),
+          display_name: trimmedName || current.user_metadata?.display_name || "Alex Sharma",
+          study_subject: updates.studySubject ?? current.user_metadata?.study_subject,
+          study_style: updates.studyStyle ?? current.user_metadata?.study_style,
+        }
+      } as User;
+
+      try {
+        localStorage.setItem("learnmate_user", JSON.stringify(updated));
+        if (trimmedName) {
+          localStorage.setItem("learnmate_display_name", trimmedName);
+        }
+        if (updates.studySubject) {
+          localStorage.setItem("learnmate_study_subject", updates.studySubject);
+        }
+        if (updates.studyStyle) {
+          localStorage.setItem("learnmate_study_style", updates.studyStyle);
+        }
+      } catch {}
+
+      return updated;
+    });
+
+    return { error: null };
+  }, [user, supabase]);
 
   const signInWithGoogle = useCallback(async () => {
     if (!supabase) {
@@ -249,6 +345,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signOut,
         signInWithGoogle,
         resetPassword,
+        updateProfile,
       }}
     >
       {children}

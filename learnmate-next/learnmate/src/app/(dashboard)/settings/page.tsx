@@ -9,7 +9,9 @@ import {
   CheckCircle2,
   Trash2,
   AlertTriangle,
-  Server
+  Server,
+  LogOut,
+  Loader2,
 } from "lucide-react";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { Button } from "@/components/ui/Button";
@@ -19,29 +21,62 @@ import { Input } from "@/components/ui/Input";
 import { checkBackendHealth } from "@/lib/backend";
 
 export default function SettingsPage() {
-  const { user } = useAuth();
+  const { user, updateProfile, signOut } = useAuth();
   const [displayName, setDisplayName] = useState(
     user?.user_metadata?.display_name || "Alex Sharma"
   );
   const [studySubject, setStudySubject] = useState("Human Biology & Cell Energetics");
   const [studyStyle, setStudyStyle] = useState("mixed");
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [backendStatus, setBackendStatus] = useState<{ online: boolean; model?: string }>({ online: false });
 
   useEffect(() => {
     checkBackendHealth().then((status) => setBackendStatus(status));
   }, []);
 
-  const handleSave = (e: React.FormEvent) => {
+  // Sync state when user or localStorage updates
+  useEffect(() => {
+    try {
+      const localName = localStorage.getItem("learnmate_display_name");
+      if (user?.user_metadata?.display_name) {
+        setDisplayName(user.user_metadata.display_name);
+      } else if (localName) {
+        setDisplayName(localName);
+      }
+
+      const savedSubject = localStorage.getItem("learnmate_study_subject");
+      if (savedSubject) setStudySubject(savedSubject);
+
+      const savedStyle = localStorage.getItem("learnmate_study_style");
+      if (savedStyle) setStudyStyle(savedStyle);
+    } catch {}
+  }, [user]);
+
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    if (!displayName.trim()) return;
+    setSaving(true);
+    try {
+      await updateProfile({
+        displayName: displayName.trim(),
+        studySubject,
+        studyStyle,
+      });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err) {
+      console.error("Failed to save profile:", err);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleClearDemoData = () => {
     try {
       localStorage.removeItem("learnmate-demo-state-v1");
       localStorage.removeItem("learnmate_onboarding");
+      localStorage.removeItem("learnmate_display_name");
       alert("Local study session reset successfully.");
       window.location.reload();
     } catch {}
@@ -123,8 +158,9 @@ export default function SettingsPage() {
           </div>
 
           <div className="pt-2">
-            <Button type="submit" size="sm">
-              <Save size={14} /> Save Profile Changes
+            <Button type="submit" size="sm" disabled={saving}>
+              {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+              {saving ? "Saving..." : "Save Profile Changes"}
             </Button>
           </div>
         </form>
@@ -176,18 +212,27 @@ export default function SettingsPage() {
         </div>
       </Card>
 
-      {/* ── Data Management & Reset ───────────────────────────── */}
+      {/* ── Data Management & Account Session ───────────────── */}
       <Card className="p-6 space-y-4 border-rose-500/30 bg-rose-500/5">
         <h3 className="text-sm font-bold text-rose-300 uppercase tracking-wider flex items-center gap-2">
           <AlertTriangle size={16} className="text-rose-400" />
-          Data Management
+          Account Session & Data Management
         </h3>
 
         <p className="text-xs text-muted leading-relaxed">
-          Reset local study sessions, clear cached quiz attempts, or restart the demo workspace.
+          Log out of your current study profile or reset your local device learning cache.
         </p>
 
-        <div>
+        <div className="flex flex-wrap items-center gap-3 pt-1">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => signOut()}
+            className="text-rose-400 hover:text-white hover:bg-rose-600/40 border-rose-500/30 font-medium"
+          >
+            <LogOut size={14} /> Log Out of Account
+          </Button>
+
           <Button variant="danger" size="sm" onClick={handleClearDemoData}>
             <Trash2 size={14} /> Reset Local Learning Session
           </Button>

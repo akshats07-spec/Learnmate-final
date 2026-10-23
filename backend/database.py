@@ -294,5 +294,30 @@ def authenticate_user(email: str, password: str) -> Optional[Dict[str, Any]]:
         "last_active_date": today_str
     }
 
+def update_user_profile(email: str, name: str) -> Optional[Dict[str, Any]]:
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        "UPDATE users SET name = ? WHERE email = ?",
+        (name.strip(), email.lower().strip())
+    )
+    conn.commit()
+    cursor.execute(
+        "SELECT id, email, name, streak_days, study_minutes, last_active_date FROM users WHERE email = ?",
+        (email.lower().strip(),)
+    )
+    row = cursor.fetchone()
+    conn.close()
+    if not row:
+        return None
+    return {
+        "id": row["id"],
+        "email": row["email"],
+        "name": row["name"],
+        "streak_days": row["streak_days"],
+        "study_minutes": row["study_minutes"],
+        "last_active_date": row["last_active_date"]
+    }
+
 # Initialize tables when imported
 init_db()

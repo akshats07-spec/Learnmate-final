@@ -120,7 +120,7 @@ export function DashboardSidebar() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5 min-w-0">
               <div className="w-8 h-8 rounded-full bg-violet-dim/30 border border-violet/40 text-violet-bright font-bold text-xs flex items-center justify-center shrink-0">
-                {user?.email?.charAt(0).toUpperCase() || "A"}
+                {user?.user_metadata?.display_name?.charAt(0).toUpperCase() || user?.email?.charAt(0).toUpperCase() || "A"}
               </div>
               <div className="min-w-0">
                 <span className="text-xs font-semibold text-white block truncate">
@@ -133,7 +133,9 @@ export function DashboardSidebar() {
             </div>
 
             <button
-              onClick={() => signOut()}
+              onClick={async () => {
+                await signOut();
+              }}
               className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
               title="Sign out"
             >

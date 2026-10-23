@@ -35,6 +35,10 @@ class AuthLoginRequest(BaseModel):
     email: str
     password: str
 
+class AuthUpdateProfileRequest(BaseModel):
+    email: str
+    name: str
+
 class TextUploadRequest(BaseModel):
     title: str
     content: str
@@ -113,6 +117,15 @@ def login_user(req: AuthLoginRequest):
     user = database.authenticate_user(req.email, req.password)
     if not user:
         raise HTTPException(status_code=401, detail="Invalid email or password.")
+    return {"success": True, "user": user}
+
+@app.post("/api/auth/profile")
+def update_profile(req: AuthUpdateProfileRequest):
+    if not req.email:
+        raise HTTPException(status_code=400, detail="Email is required.")
+    user = database.update_user_profile(req.email, req.name)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found.")
     return {"success": True, "user": user}
 
 # 1. Upload Material (PDF)
