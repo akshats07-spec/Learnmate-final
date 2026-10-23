@@ -167,6 +167,8 @@ def record_quiz_attempt(quiz_id: str, material_id: str, score: int, total_questi
     conn.close()
     return attempt_id
 
+save_quiz_attempt = record_quiz_attempt
+
 def get_material_attempts(material_id: str) -> List[Dict[str, Any]]:
     conn = get_connection()
     cursor = conn.cursor()
