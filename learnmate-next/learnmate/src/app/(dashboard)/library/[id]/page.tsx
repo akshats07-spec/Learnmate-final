@@ -87,6 +87,8 @@ export default function MaterialWorkspacePage() {
   const [searchTopic, setSearchTopic] = useState("");
   const [copied, setCopied] = useState(false);
   const [explanationDepth, setExplanationDepth] = useState<"simple" | "depth" | "example" | "podcast">("simple");
+  const [docSummary, setDocSummary] = useState<string>("");
+  const [docPrompt, setDocPrompt] = useState<string>("");
 
   useEffect(() => {
     if (!params?.id) return;
@@ -99,6 +101,8 @@ export default function MaterialWorkspacePage() {
         const parsed = JSON.parse(storedItem);
         if (parsed.name) setDocName(parsed.name);
         if (parsed.pages) setDocPages(parsed.pages);
+        if (parsed.customResponse) setDocSummary(parsed.customResponse);
+        if (parsed.userPrompt) setDocPrompt(parsed.userPrompt);
         if (Array.isArray(parsed.topics) && parsed.topics.length > 0) {
           setTopics(parsed.topics);
           setSelectedTopicId(parsed.topics[0].id);
@@ -114,6 +118,8 @@ export default function MaterialWorkspacePage() {
         if (found) {
           if (found.name) setDocName(found.name);
           if (found.pages) setDocPages(found.pages);
+          if (found.customResponse) setDocSummary(found.customResponse);
+          if (found.userPrompt) setDocPrompt(found.userPrompt);
           if (Array.isArray(found.topics) && found.topics.length > 0) {
             setTopics(found.topics);
             setSelectedTopicId(found.topics[0].id);
