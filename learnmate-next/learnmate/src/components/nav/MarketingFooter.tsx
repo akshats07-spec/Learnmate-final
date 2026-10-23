@@ -7,11 +7,15 @@ export function MarketingFooter() {
       <div className="container-page">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="flex items-center gap-2 mb-4">
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-violet-gradient text-white">
-                <BookOpen size={13} strokeWidth={2.5} />
-              </span>
-              <span className="text-sm font-semibold text-heading">LearnMate</span>
+            <Link href="/" className="flex items-center gap-2.5 mb-4 group">
+              <div className="w-7 h-7 rounded-lg overflow-hidden border border-white/10 shadow-sm shrink-0 bg-surface">
+                <img
+                  src="/logo-square.png"
+                  alt="LearnMate Logo"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <span className="text-sm font-semibold text-white group-hover:text-indigo-300 transition-colors">LearnMate</span>
             </Link>
             <p className="text-xs text-muted leading-relaxed max-w-[200px]">
               Turn your study material into deep understanding with AI.

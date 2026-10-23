@@ -6,9 +6,15 @@ export const metadata: Metadata = {
   title: { default: "LearnMate — Your personal learning system", template: "%s | LearnMate" },
   description: "Turn study material into a personalised learning and revision experience powered by AI.",
   metadataBase: new URL("https://learnmate.app"),
+  icons: {
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/apple-touch-icon.png",
+  },
   openGraph: {
     siteName: "LearnMate",
     type: "website",
+    images: [{ url: "/logo.png", width: 1024, height: 576, alt: "LearnMate Logo" }],
   },
 };
 

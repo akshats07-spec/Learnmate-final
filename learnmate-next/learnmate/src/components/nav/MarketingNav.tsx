@@ -19,8 +19,12 @@ export function MarketingNav() {
       <div className="container-page flex h-16 items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-sm transition-transform group-hover:scale-105">
-            LM
+          <div className="w-8 h-8 rounded-lg overflow-hidden border border-white/10 shadow-sm shrink-0 bg-surface transition-transform group-hover:scale-105">
+            <img
+              src="/logo-square.png"
+              alt="LearnMate Logo"
+              className="w-full h-full object-cover"
+            />
           </div>
           <span className="text-base font-bold tracking-tight text-white group-hover:text-indigo-300 transition-colors">
             LearnMate

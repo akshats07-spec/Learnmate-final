@@ -68,8 +68,12 @@ export function DashboardSidebar() {
       {/* Mobile Top Navbar with Hamburger */}
       <div className="lg:hidden flex items-center justify-between px-4 py-3 border-b border-line bg-panel/95 sticky top-0 z-40 backdrop-blur-md">
         <Link href="/dashboard" className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-sm">
-            LM
+          <div className="w-8 h-8 rounded-lg overflow-hidden border border-white/10 shadow-sm shrink-0 bg-surface">
+            <img
+              src="/logo-square.png"
+              alt="LearnMate Logo"
+              className="w-full h-full object-cover"
+            />
           </div>
           <span className="font-bold text-white text-sm tracking-tight">LearnMate</span>
         </Link>
@@ -92,8 +96,12 @@ export function DashboardSidebar() {
           {/* Brand header */}
           <div className="p-4 sm:p-5 border-b border-line flex items-center justify-between">
             <Link href="/" className="flex items-center gap-3 group">
-              <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-sm transition-transform group-hover:scale-105">
-                LM
+              <div className="w-8 h-8 rounded-lg overflow-hidden border border-white/10 shadow-sm shrink-0 bg-surface transition-transform group-hover:scale-105">
+                <img
+                  src="/logo-square.png"
+                  alt="LearnMate Logo"
+                  className="w-full h-full object-cover"
+                />
               </div>
               <div>
                 <div className="flex items-center gap-1.5">

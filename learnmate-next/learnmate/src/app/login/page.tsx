@@ -44,11 +44,15 @@ export default function LoginPage() {
       <div className="w-full max-w-md space-y-8">
         {/* Brand */}
         <div className="text-center space-y-2">
-          <Link href="/" className="inline-flex items-center gap-2.5">
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-600 text-white font-bold text-xs shadow-sm">
-              LM
-            </span>
-            <span className="text-xl font-bold tracking-tight text-white">LearnMate</span>
+          <Link href="/" className="inline-flex items-center gap-3 group">
+            <div className="w-10 h-10 rounded-xl overflow-hidden border border-white/10 shadow-md shrink-0 bg-surface group-hover:scale-105 transition-transform">
+              <img
+                src="/logo-square.png"
+                alt="LearnMate Logo"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <span className="text-xl font-bold tracking-tight text-white group-hover:text-indigo-300 transition-colors">LearnMate</span>
           </Link>
           <h2 className="text-2xl font-bold tracking-tight text-white mt-4">Welcome back</h2>
           <p className="text-xs text-muted">Sign in to your learning workspace</p>

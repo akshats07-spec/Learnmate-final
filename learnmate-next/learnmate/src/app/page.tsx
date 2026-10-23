@@ -89,8 +89,12 @@ export default function LandingPage() {
                 {/* Right: 3D Visual & Grounded Explanation */}
                 <div className="md:col-span-8 space-y-4">
                   <div className="p-4 rounded-xl bg-surface border border-line flex flex-col sm:flex-row items-center gap-4">
-                    <div className="w-28 h-28 rounded-lg bg-surface border border-white/[0.08] flex items-center justify-center shrink-0">
-                      <Box size={40} className="text-indigo-400 animate-pulse" />
+                    <div className="w-28 h-28 rounded-lg overflow-hidden border border-white/[0.08] shrink-0 bg-surface">
+                      <img
+                        src="/logo.png"
+                        alt="3D Spatial Learning Device"
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                     <div>
                       <div className="flex items-center gap-2 mb-1">

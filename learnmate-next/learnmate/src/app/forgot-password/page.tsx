@@ -36,11 +36,15 @@ export default function ForgotPasswordPage() {
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-ink">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center space-y-2">
-          <Link href="/" className="inline-flex items-center gap-2.5">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-gradient text-white shadow-glow-sm">
-              <BookOpen size={20} strokeWidth={2.5} />
-            </span>
-            <span className="text-xl font-bold tracking-tight text-white">LearnMate</span>
+          <Link href="/" className="inline-flex items-center gap-3 group">
+            <div className="w-10 h-10 rounded-xl overflow-hidden border border-white/10 shadow-md shrink-0 bg-surface group-hover:scale-105 transition-transform">
+              <img
+                src="/logo-square.png"
+                alt="LearnMate Logo"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <span className="text-xl font-bold tracking-tight text-white group-hover:text-indigo-300 transition-colors">LearnMate</span>
           </Link>
           <h2 className="text-2xl font-bold tracking-tight text-white mt-4">Reset your password</h2>
           <p className="text-xs text-muted">We will send a secure password reset link to your email</p>
