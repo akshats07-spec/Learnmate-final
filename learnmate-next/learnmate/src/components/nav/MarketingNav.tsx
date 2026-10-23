@@ -2,10 +2,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import {
-  BookOpen, Brain, Menu, X, Sparkles,
-  ChevronRight, ArrowRight
+  Menu, X, ChevronRight
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
   { label: "Features", href: "#features" },
@@ -17,14 +15,14 @@ const NAV_LINKS = [
 export function MarketingNav() {
   const [open, setOpen] = useState(false);
   return (
-    <header className="sticky top-0 z-50 border-b border-line/60 bg-ink/80 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-line bg-ink/90 backdrop-blur-md">
       <div className="container-page flex h-16 items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 group">
-          <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-violet-gradient text-white shadow-glow-sm">
-            <BookOpen size={15} strokeWidth={2.5} />
-          </span>
-          <span className="text-lg font-semibold tracking-tight text-heading group-hover:gradient-text transition-all">
+          <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-sm transition-transform group-hover:scale-105">
+            LM
+          </div>
+          <span className="text-base font-bold tracking-tight text-white group-hover:text-indigo-300 transition-colors">
             LearnMate
           </span>
         </Link>
@@ -33,51 +31,49 @@ export function MarketingNav() {
         <nav className="hidden md:flex items-center gap-6">
           {NAV_LINKS.map(l => (
             <Link key={l.label} href={l.href}
-              className="text-sm text-muted hover:text-heading transition-colors">
+              className="text-xs font-medium text-slate-400 hover:text-white transition-colors">
               {l.label}
             </Link>
           ))}
         </nav>
 
         {/* Desktop CTAs */}
-        <div className="hidden md:flex items-center gap-3">
-          <Link href="/login" className="btn-ghost focus-ring rounded-lg px-4 py-2 text-sm font-medium">
+        <div className="hidden md:flex items-center gap-2.5">
+          <Link href="/login" className="btn-ghost rounded-lg px-3.5 py-1.5 text-xs font-medium">
             Log in
           </Link>
           <Link href="/signup"
-            className="btn-primary focus-ring flex items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium">
-            Get started <ChevronRight size={14} />
+            className="btn-primary rounded-lg px-3.5 py-1.5 text-xs font-semibold flex items-center gap-1.5">
+            Get started <ChevronRight size={13} />
           </Link>
         </div>
 
         {/* Mobile toggle */}
         <button onClick={() => setOpen(!open)}
-          className="md:hidden focus-ring rounded-lg p-2 text-muted hover:text-heading"
+          className="md:hidden rounded-lg p-2 text-slate-400 hover:text-white"
           aria-label="Toggle navigation">
-          {open ? <X size={20} /> : <Menu size={20} />}
+          {open ? <X size={18} /> : <Menu size={18} />}
         </button>
       </div>
 
       {/* Mobile menu */}
       {open && (
-        <div className="md:hidden border-t border-line bg-panel/95 backdrop-blur-md animate-slide-up">
-          <div className="container-page py-4 space-y-1">
-            {NAV_LINKS.map(l => (
-              <Link key={l.label} href={l.href} onClick={() => setOpen(false)}
-                className="block rounded-lg px-3 py-2.5 text-sm text-muted hover:text-heading hover:bg-white/[.04] transition-colors">
-                {l.label}
-              </Link>
-            ))}
-            <div className="pt-3 mt-2 border-t border-line flex flex-col gap-2">
-              <Link href="/login" onClick={() => setOpen(false)}
-                className="btn-ghost focus-ring rounded-lg px-3 py-2.5 text-sm font-medium text-center">
-                Log in
-              </Link>
-              <Link href="/signup" onClick={() => setOpen(false)}
-                className="btn-primary focus-ring rounded-lg px-3 py-2.5 text-sm font-medium text-center">
-                Get started free
-              </Link>
-            </div>
+        <div className="md:hidden border-t border-line bg-panel p-4 space-y-2 animate-fade-in">
+          {NAV_LINKS.map(l => (
+            <Link key={l.label} href={l.href} onClick={() => setOpen(false)}
+              className="block rounded-lg px-3 py-2 text-xs font-medium text-slate-400 hover:text-white hover:bg-white/[0.04]">
+              {l.label}
+            </Link>
+          ))}
+          <div className="pt-3 border-t border-line flex flex-col gap-2">
+            <Link href="/login" onClick={() => setOpen(false)}
+              className="btn-ghost rounded-lg px-3 py-2 text-xs font-medium text-center">
+              Log in
+            </Link>
+            <Link href="/signup" onClick={() => setOpen(false)}
+              className="btn-primary rounded-lg px-3 py-2 text-xs font-semibold text-center">
+              Get started free
+            </Link>
           </div>
         </div>
       )}

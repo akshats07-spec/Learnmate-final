@@ -150,7 +150,7 @@ export default function RevisionPage() {
       </div>
 
       {/* ── Diagnosed Mistakes Banner ─────────────────────────── */}
-      <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="p-4 rounded-xl bg-amber-500/[0.08] border border-amber-500/20 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2.5 text-amber-200">
           <AlertTriangle size={18} className="text-amber-400 shrink-0" />
           <div>
@@ -161,7 +161,7 @@ export default function RevisionPage() {
           </div>
         </div>
         <Link href="/practice">
-          <Button variant="ghost" size="sm" className="text-amber-200 hover:text-white shrink-0">
+          <Button variant="ghost" size="sm" className="text-amber-200 hover:text-white shrink-0 border border-amber-500/30">
             Retake Quiz
           </Button>
         </Link>
@@ -178,9 +178,9 @@ export default function RevisionPage() {
           </div>
         </div>
 
-        <div className="w-full sm:w-64 bg-line rounded-full h-2">
+        <div className="w-full sm:w-64 bg-surface rounded-full h-2 border border-white/[0.08] overflow-hidden">
           <div
-            className="bg-gradient-to-r from-violet to-mint h-2 rounded-full transition-all duration-500"
+            className="bg-indigo-500 h-2 rounded-full transition-all duration-500"
             style={{ width: `${progressPct}%` }}
           />
         </div>

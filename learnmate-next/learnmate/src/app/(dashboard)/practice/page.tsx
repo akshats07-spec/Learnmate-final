@@ -293,13 +293,13 @@ function PracticeContent() {
               <button
                 key={m.id}
                 onClick={() => handleSelectMaterial(m)}
-                className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-2 ${
+                className={`px-3.5 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-all flex items-center gap-2 ${
                   isSelected
-                    ? "bg-violet text-white shadow-glow-sm ring-2 ring-violet-bright/50"
-                    : "bg-surface border border-line text-slate-300 hover:text-white hover:border-slate-600"
+                    ? "bg-indigo-600 text-white border border-indigo-400/40 shadow-sm"
+                    : "bg-surface border border-white/[0.08] text-slate-300 hover:text-white hover:border-white/20"
                 }`}
               >
-                <FileText size={14} className={isSelected ? "text-mint" : "text-slate-400"} />
+                <FileText size={14} className={isSelected ? "text-emerald-300" : "text-slate-400"} />
                 <span className="truncate max-w-[200px]">{m.name}</span>
                 {m.pages && (
                   <span className="text-2xs font-mono opacity-60">
@@ -367,9 +367,9 @@ function PracticeContent() {
                       const isCorrect = selectedAnswers[i] === questions[i].correctIndex;
                       dotStyle = isCorrect ? "bg-mint text-ink font-bold" : "bg-rose-500 text-white font-bold";
                     } else if (isCurrent) {
-                      dotStyle = "bg-violet text-white ring-2 ring-violet-bright/50";
+                      dotStyle = "bg-indigo-600 text-white font-medium border border-indigo-400/50 shadow-sm";
                     } else if (isAnswered) {
-                      dotStyle = "bg-violet/40 text-violet-bright";
+                      dotStyle = "bg-white/[0.08] text-white border border-white/[0.08]";
                     }
 
                     return (
@@ -411,7 +411,7 @@ function PracticeContent() {
                       style = "bg-rose-500/20 border-rose-500 text-rose-300";
                     else style = "opacity-45 border-line";
                   } else if (isSelected) {
-                    style = "bg-violet/20 border-violet text-white shadow-glow-sm";
+                    style = "bg-indigo-600/10 border-indigo-500/60 text-white shadow-sm ring-1 ring-indigo-500/20";
                   }
 
                   const letter = ["A", "B", "C", "D"][optIdx] || String(optIdx + 1);
@@ -443,12 +443,12 @@ function PracticeContent() {
 
               {/* Rationale & Explanation (Shown on submission) */}
               {submitted && currentQ?.explanation && (
-                <div className="p-4 rounded-xl bg-purple-950/20 border border-purple-500/30 text-purple-200 text-xs space-y-1 animate-fade-in">
-                  <div className="flex items-center gap-1.5 font-bold text-purple-300">
+                <div className="p-4 rounded-xl bg-surface border border-white/[0.08] text-slate-300 text-xs space-y-1.5 animate-fade-in shadow-sm">
+                  <div className="flex items-center gap-1.5 font-semibold text-white">
                     <Sparkles size={14} className="text-amber-400" />
                     <span>Evidence-Based Explanation:</span>
                   </div>
-                  <p className="leading-relaxed text-purple-100">{currentQ.explanation}</p>
+                  <p className="leading-relaxed text-slate-300">{currentQ.explanation}</p>
                 </div>
               )}
 

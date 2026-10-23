@@ -54,8 +54,8 @@ function SignupContent() {
         {/* Brand */}
         <div className="text-center space-y-2">
           <Link href="/" className="inline-flex items-center gap-2.5">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-gradient text-white shadow-glow-sm">
-              <BookOpen size={20} strokeWidth={2.5} />
+            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-600 text-white font-bold text-xs shadow-sm">
+              LM
             </span>
             <span className="text-xl font-bold tracking-tight text-white">LearnMate</span>
           </Link>

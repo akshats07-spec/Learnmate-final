@@ -14,7 +14,8 @@ import {
   HelpCircle,
   BookOpen,
   Mic,
-  MicOff
+  MicOff,
+  Check
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -44,8 +45,8 @@ function TutorContent() {
       id: "m0",
       sender: "ai",
       text: initialTopic
-        ? `Hello! I am your LearnMate Grounded AI Tutor. I see you want to explore "${initialTopic}". Ask me anything and I will answer with verified evidence and page citations!`
-        : "Hello! I am your LearnMate Grounded AI Tutor. I answer questions strictly based on your uploaded material. If you ask something outside the document, I will clearly flag it as unavailable.",
+        ? `I am ready to explain "${initialTopic}". Ask any question and I will answer with verified evidence and page citations from your document.`
+        : "Hello. I am your LearnMate Grounded AI Tutor. I answer questions strictly using facts from your uploaded study material. If a question is outside the text, I will explicitly flag it as unavailable.",
       found: true,
       page: null,
       timestamp: "Just now",
@@ -193,90 +194,100 @@ function TutorContent() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in max-w-5xl mx-auto">
       {/* ── Top Header ────────────────────────────────────────── */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-line">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-2xs font-semibold uppercase tracking-wider text-violet-bright">Grounded AI Tutor</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-mint" />
-            <span className="text-2xs text-muted">Hallucination Guard Active</span>
+            <span className="text-[11px] font-mono uppercase tracking-wider text-slate-400">
+              AI Workspace &bull; Grounded Tutoring
+            </span>
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400" />
+            <span className="text-[11px] text-emerald-400 font-mono">Bound to Source</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Ask Your Study Material</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+            Grounded AI Tutor
+          </h1>
           <p className="text-xs text-muted mt-1">
-            Questions are verified strictly against the uploaded text.
+            Answers are strictly constrained to facts stated in your uploaded material.
           </p>
         </div>
 
-        <Badge variant="mint" className="py-1 px-3">
-          <BookOpen size={12} /> Active: {activeDocTitle}
-        </Badge>
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-mono text-slate-300 bg-surface px-3 py-1.5 rounded-lg border border-line flex items-center gap-2">
+            <BookOpen size={13} className="text-indigo-400 shrink-0" />
+            <span className="truncate max-w-[240px]">{activeDocTitle}</span>
+          </span>
+        </div>
       </div>
 
-      {/* ── Chat Container ────────────────────────────────────── */}
-      <Card className="p-0 overflow-hidden flex flex-col h-[600px] border border-line">
+      {/* ── Chat Container (Claude / ChatGPT Enterprise Layout) ─── */}
+      <div className="rounded-xl bg-surface border border-line overflow-hidden flex flex-col h-[620px] shadow-sm">
         {/* Messages List */}
-        <div className="flex-1 p-5 overflow-y-auto space-y-4">
+        <div className="flex-1 p-4 sm:p-6 overflow-y-auto space-y-4">
           {messages.map((m) => {
             const isAi = m.sender === "ai";
 
             return (
-              <div key={m.id} className={`flex items-start gap-3 ${isAi ? "justify-start" : "justify-end"}`}>
+              <div
+                key={m.id}
+                className={`flex items-start gap-3 ${isAi ? "justify-start" : "justify-end"}`}
+              >
                 {isAi && (
-                  <div className="w-8 h-8 rounded-xl bg-violet-dim/30 border border-violet/40 text-violet-bright flex items-center justify-center shrink-0">
-                    <Bot size={16} />
+                  <div className="w-7 h-7 rounded-lg bg-panel border border-line text-indigo-400 flex items-center justify-center shrink-0 mt-0.5 font-mono text-xs">
+                    <Bot size={15} />
                   </div>
                 )}
 
                 <div
-                  className={`max-w-[85%] rounded-2xl p-4 text-xs sm:text-sm leading-relaxed space-y-2.5 ${
+                  className={`max-w-[85%] sm:max-w-[78%] rounded-xl p-4 text-xs sm:text-sm leading-relaxed space-y-2.5 ${
                     isAi
                       ? m.found === false
-                        ? "bg-rose-950/20 border border-rose-500/40 text-rose-200"
-                        : "bg-surface border border-line text-slate-200"
-                      : "bg-violet text-white"
+                        ? "bg-rose-500/10 border border-rose-500/25 text-rose-200"
+                        : "bg-panel border border-line text-slate-200"
+                      : "bg-white/[0.08] text-white border border-white/[0.1] shadow-sm"
                   }`}
                 >
                   {/* Out of scope warning */}
                   {isAi && m.found === false && (
-                    <div className="p-2 rounded-lg bg-rose-500/20 text-rose-300 font-bold text-2xs flex items-center gap-1.5">
-                      <AlertTriangle size={14} className="shrink-0" />
+                    <div className="p-2 rounded bg-rose-500/15 text-rose-300 font-medium text-[11px] flex items-center gap-1.5 border border-rose-500/20">
+                      <AlertTriangle size={13} className="shrink-0" />
                       <span>FACT UNAVAILABLE IN UPLOADED MATERIAL</span>
                     </div>
                   )}
 
-                  <p className="whitespace-pre-line">{m.text}</p>
+                  <p className="whitespace-pre-line text-slate-200">{m.text}</p>
 
                   {/* Grounded Citation */}
                   {isAi && m.found && m.page && (
-                    <div className="pt-2 border-t border-line/60 flex items-center gap-1.5 text-2xs text-violet-bright font-mono">
-                      <BookmarkCheck size={13} />
+                    <div className="pt-2 border-t border-line flex items-center gap-1.5 text-[11px] text-indigo-300 font-mono">
+                      <BookmarkCheck size={12} className="text-indigo-400" />
                       <span>Verified Citation: Page {m.page}</span>
                     </div>
                   )}
 
                   {/* Direct Quoted Evidence */}
                   {isAi && m.evidence && (
-                    <blockquote className="text-2xs text-slate-400 italic bg-ink/60 p-2 rounded-lg border border-line flex items-start gap-1.5">
-                      <Quote size={12} className="text-muted shrink-0 mt-0.5" />
+                    <blockquote className="text-[11px] text-slate-400 italic bg-ink/70 p-2.5 rounded border border-line flex items-start gap-2">
+                      <Quote size={12} className="text-slate-500 shrink-0 mt-0.5" />
                       <span>"{m.evidence}"</span>
                     </blockquote>
                   )}
 
                   {/* Next Step / Suggested Query */}
                   {isAi && m.nextStep && (
-                    <div className="pt-1 text-2xs text-slate-400 flex items-center gap-1">
-                      <Sparkles size={11} className="text-amber-400" />
-                      <span>Next step: {m.nextStep}</span>
+                    <div className="pt-1 text-[11px] text-slate-400 flex items-center gap-1.5">
+                      <span className="text-slate-500">Recommendation:</span>
+                      <span className="text-slate-300">{m.nextStep}</span>
                     </div>
                   )}
 
-                  <div className="text-2xs text-right opacity-50">{m.timestamp}</div>
+                  <div className="text-[10px] text-right text-slate-500">{m.timestamp}</div>
                 </div>
 
                 {!isAi && (
-                  <div className="w-8 h-8 rounded-xl bg-surface border border-line text-slate-400 flex items-center justify-center shrink-0">
-                    <User size={16} />
+                  <div className="w-7 h-7 rounded-lg bg-panel border border-line text-slate-400 flex items-center justify-center shrink-0 mt-0.5 font-mono text-xs">
+                    <User size={15} />
                   </div>
                 )}
               </div>
@@ -285,12 +296,12 @@ function TutorContent() {
 
           {loading && (
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-xl bg-violet-dim/30 border border-violet/40 text-violet-bright flex items-center justify-center shrink-0">
-                <Bot size={16} />
+              <div className="w-7 h-7 rounded-lg bg-panel border border-line text-indigo-400 flex items-center justify-center shrink-0">
+                <Bot size={15} />
               </div>
-              <div className="p-3.5 rounded-2xl bg-surface border border-line text-xs text-muted flex items-center gap-2">
-                <RefreshCw size={14} className="animate-spin text-violet" />
-                <span>Searching uploaded pages and verifying evidence...</span>
+              <div className="p-3 rounded-xl bg-panel border border-line text-xs text-muted flex items-center gap-2">
+                <RefreshCw size={13} className="animate-spin text-indigo-400" />
+                <span>Searching source documents and verifying evidence...</span>
               </div>
             </div>
           )}
@@ -299,7 +310,7 @@ function TutorContent() {
         </div>
 
         {/* Input Bar */}
-        <div className="p-4 bg-surface/80 border-t border-line">
+        <div className="p-3.5 sm:p-4 bg-panel border-t border-line">
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -311,55 +322,68 @@ function TutorContent() {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={isListening ? "Listening to your voice... speak now..." : "Ask a question about this material (or click mic to speak)..."}
-              className={`input-base text-xs sm:text-sm py-2.5 transition-all ${
-                isListening ? "border-rose-500 ring-2 ring-rose-500/20 bg-rose-500/5 placeholder:text-rose-300" : ""
+              placeholder={
+                isListening
+                  ? "Listening to voice input... speak clearly now..."
+                  : "Ask anything about this document (or use mic)..."
+              }
+              className={`input-base text-xs sm:text-sm py-2 px-3 rounded-lg transition-all ${
+                isListening
+                  ? "border-rose-500 bg-rose-500/10 placeholder:text-rose-300"
+                  : ""
               }`}
             />
+
             <button
               type="button"
               onClick={toggleListening}
-              className={`p-2.5 rounded-xl border transition-all flex items-center justify-center shrink-0 ${
+              className={`p-2 rounded-lg border transition-all flex items-center justify-center shrink-0 ${
                 isListening
-                  ? "bg-rose-500 text-white border-rose-600 animate-pulse shadow-glow-sm"
-                  : "bg-surface border-line text-slate-400 hover:text-white hover:border-violet/40"
+                  ? "bg-rose-600 text-white border-rose-500 animate-pulse"
+                  : "bg-surface border-line text-slate-400 hover:text-white hover:border-white/20"
               }`}
-              title={isListening ? "Stop listening" : "Click to speak (Voice typing)"}
+              title={isListening ? "Stop voice typing" : "Voice dictation"}
             >
-              {isListening ? <MicOff size={16} className="text-white" /> : <Mic size={16} />}
+              {isListening ? <MicOff size={15} /> : <Mic size={15} />}
             </button>
-            <Button type="submit" disabled={!input.trim() || loading} size="sm" className="px-4">
-              <Send size={15} />
+
+            <Button
+              type="submit"
+              disabled={!input.trim() || loading}
+              size="sm"
+              className="px-3.5 h-9"
+            >
+              <Send size={14} />
             </Button>
           </form>
 
-          {/* Suggested question chips */}
+          {/* Preset Questions */}
           <div className="flex flex-wrap items-center gap-1.5 mt-2.5">
-            <span className="text-2xs text-muted">Try asking:</span>
+            <span className="text-[11px] text-slate-500">Suggested queries:</span>
             {[
-              "Explain mitochondria in simple language",
+              "Explain mitochondria in simple terms",
               "What is the difference between plant and animal cells?",
-              "Explain quantum computing (Test out-of-scope guard)"
+              "What is quantum entanglement? (Out-of-scope test)",
             ].map((s, idx) => (
               <button
                 key={idx}
                 type="button"
                 onClick={() => handleSend(s)}
-                className="text-2xs px-2.5 py-1 rounded-lg bg-panel border border-line text-slate-300 hover:text-white hover:border-violet/40 transition-colors"
+                className="text-[11px] px-2.5 py-1 rounded bg-surface border border-line text-slate-300 hover:text-white hover:border-white/20 transition-all"
               >
                 {s}
               </button>
             ))}
           </div>
         </div>
-      </Card>
+      </div>
     </div>
   );
 }
 
 export default function TutorPage() {
   return (
-    <Suspense fallback={<div className="p-8 text-muted text-sm">Loading tutor...</div>}>
+    <Suspense fallback={<div className="p-8 text-muted text-sm">Loading tutor workspace...</div>}>
       <TutorContent />
     </Suspense>
   );

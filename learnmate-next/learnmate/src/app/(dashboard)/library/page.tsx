@@ -13,7 +13,6 @@ import {
   RefreshCw,
   Plus,
   Clock,
-  Sparkles,
   ChevronRight,
   AlertCircle,
   Copy,
@@ -21,14 +20,16 @@ import {
   Brain,
   Box,
   Target,
-  Send,
-  HelpCircle,
+  Sparkles,
+  Command,
+  FileCode,
+  ArrowRight,
   X,
+  Layers
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
 
 interface MaterialItem {
   id: string;
@@ -72,12 +73,12 @@ const INITIAL_MATERIALS: MaterialItem[] = [
 ];
 
 const PROMPT_SUGGESTIONS = [
-  "⚡ Quick Executive Summary",
-  "🔑 Key Formulas & Definitions",
-  "❓ Top 5 Likely Exam Questions",
-  "💡 Explain Like I'm 5 (ELIF)",
-  "🎯 5-Question Diagnostic Quiz",
-  "🧊 Create 3D Spatial Model",
+  "Executive Summary",
+  "Key Formulas & Definitions",
+  "Top 5 Likely Exam Questions",
+  "Explain Like I'm 5 (ELIF)",
+  "5-Question Diagnostic Quiz",
+  "3D Spatial Model",
 ];
 
 export default function LibraryPage() {
@@ -86,11 +87,10 @@ export default function LibraryPage() {
   const [filterType, setFilterType] = useState<"all" | "pdf" | "image">("all");
   const [uploading, setUploading] = useState(false);
   const [uploadNotice, setUploadNotice] = useState<string | null>(null);
-  const [userPrompt, setUserPrompt] = useState("Quick Executive Summary");
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [userPrompt, setUserPrompt] = useState("Executive Summary");
   const [copied, setCopied] = useState(false);
 
-  // ChatGPT-style active quick response state
+  // Active quick response state
   const [quickResult, setQuickResult] = useState<{
     id: string;
     title: string;
@@ -101,7 +101,6 @@ export default function LibraryPage() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Load user's saved materials from localStorage on mount
   useEffect(() => {
     try {
       const saved = localStorage.getItem("learnmate_materials");
@@ -122,7 +121,7 @@ export default function LibraryPage() {
     if (!file) return;
     setUploadNotice(null);
     setUploading(true);
-    const promptToSend = explicitPrompt || userPrompt || "Quick Executive Summary";
+    const promptToSend = explicitPrompt || userPrompt || "Executive Summary";
 
     try {
       const formData = new FormData();
@@ -168,7 +167,6 @@ export default function LibraryPage() {
         return updated;
       });
 
-      // Display ChatGPT-style Instant Result Drawer
       if (data.customResponse) {
         setQuickResult({
           id: newId,
@@ -180,13 +178,12 @@ export default function LibraryPage() {
       }
 
       setUploadNotice(
-        `Successfully analyzed "${docTitle}" (${data.pageCount || 1} pages)! Your ${promptToSend.toLowerCase()} is ready below.`
+        `Successfully indexed "${docTitle}" (${data.pageCount || 1} pages). Synthesis available below.`
       );
     } catch (err: any) {
-      setUploadNotice(err.message || "Upload failed. Please try a text PDF or image under 12 MB.");
+      setUploadNotice(err.message || "Upload failed. Please upload a PDF, text, or image file under 12 MB.");
     } finally {
       setUploading(false);
-      setSelectedFile(null);
     }
   };
 
@@ -215,36 +212,35 @@ export default function LibraryPage() {
   });
 
   return (
-    <div className="space-y-8">
-      {/* ── Header ────────────────────────────────────────────── */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div className="space-y-6 sm:space-y-8 animate-fade-in max-w-7xl mx-auto">
+      {/* ── 1. Clean Header ───────────────────────────────────── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-line">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-2xs font-semibold uppercase tracking-wider text-violet-bright">
-              Smart Ingestion Engine
+            <span className="text-[11px] font-mono uppercase tracking-wider text-slate-400">
+              Workspace &bull; Document Ingestion
             </span>
-            <span className="w-1.5 h-1.5 rounded-full bg-mint" />
-            <span className="text-2xs text-muted">Document Prompting & Quick Summaries</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-            My Study Library
+          <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+            Study Material Library
           </h1>
           <p className="text-xs text-muted mt-1">
-            Upload any textbook, lecture slides, or PDF and specify what you need — from quick summaries to exam prep.
+            Upload lecture notes, PDFs, and textbooks with custom AI instructions.
           </p>
         </div>
 
         <button
           onClick={() => fileInputRef.current?.click()}
-          className="btn-primary rounded-xl px-4 py-2.5 text-xs font-semibold flex items-center gap-2 shadow-glow-sm"
+          className="btn-primary rounded-lg px-4 py-2 text-xs font-semibold flex items-center gap-2 self-start sm:self-auto"
         >
           <Upload size={14} />
-          <span>Upload PDF or Image</span>
+          <span>Upload Document</span>
         </button>
+
         <input
           ref={fileInputRef}
           type="file"
-          accept=".pdf,.png,.jpg,.jpeg,.webp"
+          accept=".pdf,.png,.jpg,.jpeg,.webp,.txt,.md"
           className="hidden"
           onChange={(e) => {
             const f = e.target.files?.[0];
@@ -253,56 +249,58 @@ export default function LibraryPage() {
         />
       </div>
 
-      {/* ── ChatGPT-Style Prompt & Upload Box ─────────────────── */}
-      <Card className="p-6 border-violet/30 bg-gradient-to-b from-panel via-surface/60 to-panel space-y-4 shadow-card">
+      {/* ── 2. Command-Bar Ingestion Interface (Raycast Style) ─── */}
+      <div className="p-4 sm:p-5 rounded-xl bg-surface border border-line space-y-3.5">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Sparkles size={16} className="text-amber-400 animate-pulse" />
-            <h3 className="text-xs font-bold uppercase tracking-wider text-white">
-              What do you want LearnMate to do with your document?
-            </h3>
+          <div className="flex items-center gap-2 text-xs font-semibold text-white">
+            <Command size={14} className="text-indigo-400" />
+            <span>Document Ingestion Instruction</span>
           </div>
-          <Badge variant="mint">ChatGPT-Style Prompting</Badge>
+          <span className="text-[11px] font-mono text-slate-400">
+            Powered by Gemini
+          </span>
         </div>
 
-        {/* Prompt Input Bar */}
-        <div className="relative">
-          <input
-            type="text"
-            value={userPrompt}
-            onChange={(e) => setUserPrompt(e.target.value)}
-            placeholder="e.g. Give me a quick executive summary with 5 key bullet points, or explain chapter 2..."
-            className="w-full pl-4 pr-32 py-3 rounded-2xl bg-ink/80 border border-line focus:border-violet text-xs text-white placeholder-slate-500 transition-all shadow-inner"
-          />
+        {/* Input Bar */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+          <div className="relative flex-1">
+            <input
+              type="text"
+              value={userPrompt}
+              onChange={(e) => setUserPrompt(e.target.value)}
+              placeholder="e.g. Executive Summary, Key Formulas, 5-Question Diagnostic Quiz..."
+              className="w-full pl-3.5 pr-4 py-2.5 rounded-lg bg-panel border border-line focus:border-indigo-500 text-xs text-white placeholder-slate-500 transition-all outline-none"
+            />
+          </div>
+
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
-            className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 rounded-xl bg-violet hover:bg-violet-bright text-white text-xs font-semibold flex items-center gap-1.5 transition-all shadow-sm"
+            className="btn-secondary px-4 py-2.5 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 shrink-0"
           >
             {uploading ? (
-              <RefreshCw size={13} className="animate-spin" />
+              <RefreshCw size={13} className="animate-spin text-indigo-400" />
             ) : (
               <Upload size={13} />
             )}
-            <span>Select PDF</span>
+            <span>{uploading ? "Ingesting..." : "Select File & Process"}</span>
           </button>
         </div>
 
         {/* Quick Suggestion Chips */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-          <span className="text-2xs text-muted font-medium shrink-0">Quick Actions:</span>
+        <div className="flex items-center gap-1.5 flex-wrap pt-1">
+          <span className="text-[11px] text-slate-400 font-medium mr-1">Presets:</span>
           {PROMPT_SUGGESTIONS.map((sug, idx) => {
-            const cleanText = sug.replace(/^[^a-zA-Z0-9]+/, "").trim();
-            const isSelected = userPrompt.toLowerCase().includes(cleanText.toLowerCase());
-
+            const isSelected = userPrompt.toLowerCase() === sug.toLowerCase();
             return (
               <button
                 key={idx}
-                onClick={() => setUserPrompt(cleanText)}
-                className={`px-3 py-1.5 rounded-xl text-2xs font-semibold whitespace-nowrap transition-all border ${
+                type="button"
+                onClick={() => setUserPrompt(sug)}
+                className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-all ${
                   isSelected
-                    ? "bg-violet text-white border-violet shadow-sm"
-                    : "bg-panel/70 border-line text-slate-300 hover:text-white hover:border-slate-500"
+                    ? "bg-indigo-600 text-white border border-indigo-500"
+                    : "bg-panel text-slate-300 border border-line hover:border-white/20 hover:text-white"
                 }`}
               >
                 {sug}
@@ -310,216 +308,187 @@ export default function LibraryPage() {
             );
           })}
         </div>
+      </div>
 
-        {/* Drag & Drop Upload Zone */}
-        <div
-          onClick={() => fileInputRef.current?.click()}
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={(e) => {
-            e.preventDefault();
-            const f = e.dataTransfer.files?.[0];
-            if (f) handleFileUpload(f);
-          }}
-          className="p-6 rounded-2xl border-2 border-dashed border-line hover:border-violet/60 bg-ink/30 hover:bg-ink/50 transition-all text-center cursor-pointer space-y-2"
-        >
-          <div className="w-10 h-10 rounded-xl bg-violet/10 border border-violet/20 text-violet-bright flex items-center justify-center mx-auto">
-            {uploading ? <RefreshCw size={20} className="animate-spin" /> : <Upload size={20} />}
+      {/* Notice Message */}
+      {uploadNotice && (
+        <div className="p-3 rounded-lg bg-panel border border-line text-xs flex items-center justify-between text-slate-200">
+          <div className="flex items-center gap-2">
+            <Check size={14} className="text-emerald-400 shrink-0" />
+            <span>{uploadNotice}</span>
           </div>
-          <div>
-            <h4 className="text-xs font-bold text-white">
-              {uploading
-                ? `Gemini is processing your document & generating "${userPrompt}"...`
-                : "Drop PDF or image here to upload with this instruction"}
-            </h4>
-            <p className="text-2xs text-muted mt-0.5">
-              Supports text PDFs, lecture notes, PNG, and JPG up to 20 pages (12 MB max).
-            </p>
-          </div>
+          <button onClick={() => setUploadNotice(null)} className="text-slate-500 hover:text-white">
+            <X size={14} />
+          </button>
         </div>
-      </Card>
+      )}
 
-      {/* ── ChatGPT-Style Quick Result Card (Generated on Upload) ──── */}
+      {/* ── 3. Generated Synthesis Drawer ─────────────────────── */}
       {quickResult && (
-        <Card className="p-6 border-mint/40 bg-gradient-to-b from-panel via-surface to-panel space-y-4 animate-fade-in shadow-glow-sm">
-          <div className="flex items-start justify-between gap-4 border-b border-line pb-4">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="px-2 py-0.5 rounded-full bg-mint/20 border border-mint/40 text-mint text-2xs font-mono font-bold flex items-center gap-1">
-                  <Sparkles size={11} /> Instant AI Synthesis
+        <div className="p-5 sm:p-6 rounded-xl bg-surface border border-indigo-500/30 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-line">
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-indigo-500/15 text-indigo-300 border border-indigo-500/25">
+                  {quickResult.prompt}
                 </span>
-                <span className="text-2xs text-muted font-mono">&bull; {quickResult.pages} Pages</span>
+                <span className="text-xs text-slate-400 font-mono">
+                  {quickResult.pages} {quickResult.pages === 1 ? "page" : "pages"}
+                </span>
               </div>
-              <h3 className="text-base font-bold text-white">{quickResult.title}</h3>
-              <p className="text-2xs text-violet-bright font-mono mt-0.5">
-                Instruction: "{quickResult.prompt}"
-              </p>
+              <h3 className="text-sm font-semibold text-white tracking-tight">
+                {quickResult.title}
+              </h3>
             </div>
 
-            <div className="flex items-center gap-2 shrink-0">
-              <Button
-                variant="secondary"
-                size="sm"
+            <div className="flex items-center gap-2">
+              <button
                 onClick={() => handleCopy(quickResult.content)}
-                className="text-xs"
+                className="btn-secondary px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5"
               >
-                {copied ? <Check size={13} className="text-mint" /> : <Copy size={13} />}
+                {copied ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
                 <span>{copied ? "Copied" : "Copy"}</span>
-              </Button>
+              </button>
               <button
                 onClick={() => setQuickResult(null)}
-                className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-panel"
-                title="Dismiss"
+                className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-white/[0.05]"
               >
-                <X size={16} />
+                <X size={15} />
               </button>
             </div>
           </div>
 
           {/* Formatted Markdown Content */}
-          <div className="p-4 rounded-2xl bg-ink/70 border border-line text-xs sm:text-sm text-slate-200 leading-relaxed whitespace-pre-line font-normal space-y-2">
+          <div className="p-4 rounded-lg bg-panel border border-line text-xs text-slate-200 leading-relaxed max-h-96 overflow-y-auto space-y-2 whitespace-pre-line font-sans">
             {quickResult.content}
           </div>
 
-          {/* Action Bridge: Next Steps */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2">
-            <Link href={`/tutor?topic=${encodeURIComponent(quickResult.title)}`}>
-              <Button variant="outline" size="sm" className="w-full justify-center gap-2 text-xs">
-                <Brain size={14} className="text-violet" />
-                <span>Ask AI Tutor More</span>
+          {/* Integrated Actions */}
+          <div className="flex flex-wrap items-center gap-2.5 pt-1">
+            <Link href={`/library/${quickResult.id}`}>
+              <Button size="sm">
+                Open Full Workspace <ArrowRight size={13} />
+              </Button>
+            </Link>
+            <Link href="/tutor">
+              <Button variant="secondary" size="sm">
+                <Brain size={13} /> Ask Tutor About This
               </Button>
             </Link>
             <Link href={`/practice?materialId=${quickResult.id}`}>
-              <Button variant="outline" size="sm" className="w-full justify-center gap-2 text-xs">
-                <Target size={14} className="text-mint" />
-                <span>Take Diagnostic Quiz</span>
+              <Button variant="secondary" size="sm">
+                <Target size={13} /> Take Diagnostic Quiz
               </Button>
             </Link>
-            <Link href={`/visuals?topic=${encodeURIComponent(quickResult.title)}`}>
-              <Button variant="outline" size="sm" className="w-full justify-center gap-2 text-xs">
-                <Box size={14} className="text-amber-400" />
-                <span>Generate 3D Model</span>
+            <Link href="/visuals">
+              <Button variant="ghost" size="sm">
+                <Box size={13} /> Open 3D Model
               </Button>
             </Link>
           </div>
-        </Card>
-      )}
-
-      {/* Upload notice */}
-      {uploadNotice && (
-        <div className="p-3.5 rounded-xl bg-violet-dim/20 border border-violet/30 text-violet-bright text-xs flex items-center gap-2">
-          <Sparkles size={16} />
-          <span>{uploadNotice}</span>
         </div>
       )}
 
-      {/* ── Search & Filter Controls ──────────────────────────── */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-panel border border-line">
-        <div className="relative w-full sm:w-72">
-          <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search documents by name..."
-            className="input-base pl-9 text-xs"
-          />
+      {/* ── 4. Document List & Filter Section ─────────────────── */}
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-1 bg-surface p-1 rounded-lg border border-line">
+            {[
+              { id: "all", label: "All Documents" },
+              { id: "pdf", label: "PDFs" },
+              { id: "image", label: "Images" },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setFilterType(tab.id as any)}
+                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                  filterType === tab.id
+                    ? "bg-white/[0.08] text-white shadow-sm border border-white/[0.06]"
+                    : "text-slate-400 hover:text-slate-200"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="relative w-full sm:w-64">
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search library..."
+              className="w-full pl-9 pr-3 py-1.5 rounded-lg bg-surface border border-line text-xs text-white placeholder-slate-500 focus:border-indigo-500 outline-none"
+            />
+          </div>
         </div>
 
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <span className="text-2xs text-muted font-medium flex items-center gap-1">
-            <Filter size={12} /> Filter:
-          </span>
-          {(["all", "pdf", "image"] as const).map((t) => (
-            <button
-              key={t}
-              onClick={() => setFilterType(t)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all uppercase text-2xs ${
-                filterType === t
-                  ? "bg-violet text-white shadow-sm"
-                  : "bg-surface border border-line text-slate-400 hover:text-white"
-              }`}
+        {/* Document Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+          {filtered.map((mat) => (
+            <div
+              key={mat.id}
+              className="p-4 sm:p-5 rounded-xl bg-surface border border-line hover:border-white/20 transition-all flex flex-col justify-between space-y-4 group"
             >
-              {t}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* ── Materials List / Cards ────────────────────────────── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {filtered.map((mat) => {
-          const isPdf = mat.type === "pdf";
-
-          return (
-            <Card key={mat.id} className="p-5 flex flex-col justify-between hover:border-slate-700 transition-all">
-              <div>
-                <div className="flex items-start justify-between gap-3 mb-3">
-                  <div className="flex items-center gap-2.5">
-                    <div className="p-2.5 rounded-xl bg-surface border border-line text-violet">
-                      {isPdf ? <FileText size={18} /> : <ImageIcon size={18} />}
+              <div className="space-y-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="w-8 h-8 rounded-lg bg-panel border border-line flex items-center justify-center shrink-0">
+                      {mat.type === "pdf" ? (
+                        <FileText size={16} className="text-indigo-400" />
+                      ) : (
+                        <ImageIcon size={16} className="text-cyan-400" />
+                      )}
                     </div>
-                    <div>
-                      <span className="text-2xs text-muted uppercase font-bold tracking-wider">
-                        {isPdf ? `${mat.pages} Pages` : "Image Note"} &bull; {mat.topicsCount} Topics
+                    <div className="min-w-0">
+                      <h4 className="text-xs font-semibold text-white tracking-tight truncate group-hover:text-indigo-300 transition-colors">
+                        {mat.name}
+                      </h4>
+                      <span className="text-[11px] text-muted font-mono block">
+                        {mat.pages} {mat.pages === 1 ? "page" : "pages"} &bull; {mat.topicsCount} topics
                       </span>
-                      <h3 className="text-sm font-bold text-white line-clamp-1">{mat.name}</h3>
                     </div>
                   </div>
 
                   <button
                     onClick={() => handleDelete(mat.id)}
-                    className="p-1.5 text-slate-500 hover:text-rose-400 rounded-lg hover:bg-rose-500/10"
-                    title="Delete material"
+                    className="p-1.5 text-slate-500 hover:text-rose-400 rounded-md hover:bg-rose-500/10 transition-colors shrink-0"
+                    title="Delete document"
                   >
-                    <Trash2 size={15} />
+                    <Trash2 size={13} />
                   </button>
                 </div>
 
-                {/* Mastery progress */}
-                <div className="space-y-1.5 my-3">
-                  <div className="flex justify-between text-2xs">
-                    <span className="text-muted">Mastery Retention:</span>
-                    <span className="font-mono font-bold text-white">{mat.mastery}%</span>
+                {mat.userPrompt && (
+                  <div className="p-2 rounded bg-panel border border-line text-[11px] text-slate-300 flex items-center gap-1.5">
+                    <Sparkles size={11} className="text-indigo-400 shrink-0" />
+                    <span className="truncate">Prompt: {mat.userPrompt}</span>
                   </div>
-                  <div className="w-full bg-line rounded-full h-1.5">
-                    <div
-                      className="bg-gradient-to-r from-violet to-mint h-1.5 rounded-full"
-                      style={{ width: `${mat.mastery}%` }}
-                    />
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-4 text-2xs text-muted mt-3 pt-3 border-t border-line/60">
-                  <span>Uploaded: {mat.uploadedAt}</span>
-                  <span>&bull;</span>
-                  <span>Studied: {mat.lastStudied}</span>
-                </div>
+                )}
               </div>
 
-              {/* Action buttons */}
-              <div className="pt-4 mt-2 space-y-2">
-                <div className="grid grid-cols-2 gap-2">
+              <div className="pt-2 border-t border-line flex items-center justify-between">
+                <span className="text-[10px] text-muted">
+                  Indexed: {mat.uploadedAt}
+                </span>
+
+                <div className="flex items-center gap-1.5">
+                  <Link href={`/library/${mat.id}`}>
+                    <Button size="sm" variant="ghost" className="h-7 text-xs px-2.5">
+                      Open <ChevronRight size={12} />
+                    </Button>
+                  </Link>
                   <Link href={`/practice?materialId=${mat.id}`}>
-                    <Button size="sm" className="w-full justify-center text-xs">
-                      <span>Take Quiz</span>
-                    </Button>
-                  </Link>
-                  <Link href={`/visuals?topic=${encodeURIComponent(mat.name)}`}>
-                    <Button variant="secondary" size="sm" className="w-full justify-center text-xs">
-                      <span>3D Model</span>
+                    <Button size="sm" variant="secondary" className="h-7 text-xs px-2.5">
+                      Quiz
                     </Button>
                   </Link>
                 </div>
-                <Link href={`/library/${mat.id}`}>
-                  <Button variant="outline" size="sm" className="w-full justify-between text-xs">
-                    <span>Open Learning Workspace</span>
-                    <ChevronRight size={14} />
-                  </Button>
-                </Link>
               </div>
-            </Card>
-          );
-        })}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

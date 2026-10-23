@@ -53,14 +53,14 @@ export default function PricingPage() {
               return (
                 <div
                   key={plan.id}
-                  className={`rounded-3xl p-7 transition-all relative flex flex-col justify-between ${
+                  className={`rounded-2xl p-7 transition-all relative flex flex-col justify-between ${
                     isPro
-                      ? "bg-panel border-2 border-violet shadow-glow"
-                      : "bg-surface border border-line"
+                      ? "bg-panel border-2 border-indigo-500 shadow-lg"
+                      : "bg-surface border border-white/[0.08]"
                   }`}
                 >
                   {isPro && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3.5 py-0.5 rounded-full bg-violet text-white text-2xs font-bold uppercase tracking-wider shadow-md">
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-indigo-600 text-white text-2xs font-bold uppercase tracking-wider shadow-sm">
                       Most Popular
                     </div>
                   )}

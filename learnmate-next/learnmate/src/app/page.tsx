@@ -22,46 +22,46 @@ export default function LandingPage() {
 
       {/* ── 1. Hero Section ───────────────────────────────────── */}
       <section className="relative pt-20 pb-24 md:pt-32 md:pb-36 overflow-hidden">
-        {/* Glow backdrop */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-violet-glow rounded-full blur-[120px] pointer-events-none -z-10" />
+        {/* Subtle executive radial spotlight */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[360px] bg-gradient-to-b from-indigo-500/10 via-transparent to-transparent blur-3xl pointer-events-none -z-10" />
 
         <div className="container-page text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-400/10 border border-violet/20 text-xs text-violet-bright font-medium mb-8 animate-fade-in">
-            <Sparkles size={14} className="text-violet" />
-            <span>AI-Powered Autonomous Learning System</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/10 text-xs text-slate-300 font-mono mb-8 animate-fade-in shadow-sm">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Autonomous Document Grounded Engine</span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight max-w-4xl mx-auto leading-[1.1] mb-6">
-            Turn your study material into <span className="gradient-text">understanding</span>.
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight max-w-4xl mx-auto leading-[1.1] mb-6 text-white">
+            Turn complex study material into <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-indigo-200 to-indigo-400">mastery</span>.
           </h1>
 
-          <p className="text-base sm:text-lg md:text-xl text-muted max-w-2xl mx-auto mb-10 leading-relaxed">
-            Upload your lecture notes, textbooks, and diagrams. LearnMate automatically extracts structured topics, generates grounded AI explanations, interactive 3D visuals, diagnostic quizzes, and adaptive revision schedules.
+          <p className="text-base sm:text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed font-normal">
+            Upload your lecture notes, textbooks, and research papers. LearnMate parses topics, creates verified citations, renders interactive 3D concepts, and conducts targeted diagnostic quizzes.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
             <Link href="/signup">
-              <Button size="lg" className="w-full sm:w-auto">
-                Start learning free <ArrowRight size={18} />
+              <Button size="lg" className="w-full sm:w-auto shadow-md">
+                Get started free <ArrowRight size={18} />
               </Button>
             </Link>
             <Link href="#features">
-              <Button variant="ghost" size="lg" className="w-full sm:w-auto">
+              <Button variant="ghost" size="lg" className="w-full sm:w-auto text-slate-300 hover:text-white border border-white/[0.08]">
                 Explore features
               </Button>
             </Link>
           </div>
 
           {/* Interactive Product Preview Mockup */}
-          <div className="relative mx-auto max-w-5xl rounded-3xl p-2 sm:p-3 bg-gradient-to-b from-white/[.12] to-transparent border border-line shadow-2xl">
-            <div className="rounded-2xl bg-panel border border-line overflow-hidden shadow-card">
+          <div className="relative mx-auto max-w-5xl rounded-2xl p-1.5 bg-gradient-to-b from-white/[0.12] to-white/[0.02] border border-white/[0.08] shadow-2xl">
+            <div className="rounded-xl bg-panel border border-white/[0.06] overflow-hidden">
               {/* Window Bar */}
-              <div className="flex items-center justify-between px-4 py-3 border-b border-line bg-surface/80">
+              <div className="flex items-center justify-between px-4 py-3 border-b border-line bg-surface/90">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-rose-500/80" />
-                  <div className="w-3 h-3 rounded-full bg-amber-500/80" />
-                  <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
-                  <span className="text-2xs text-muted font-mono ml-2">learnmate-workspace // biology-ch7.pdf</span>
+                  <div className="w-2.5 h-2.5 rounded-full bg-white/20" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-white/20" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-white/20" />
+                  <span className="text-2xs text-slate-400 font-mono ml-2">learnmate-workspace // biology-ch7.pdf</span>
                 </div>
                 <Badge variant="mint">Grounded AI Active</Badge>
               </div>
@@ -77,11 +77,11 @@ export default function LandingPage() {
                     { name: "Krebs Citric Acid Cycle", mastery: 68, active: false },
                     { name: "Electron Transport Chain", mastery: 28, active: false }
                   ].map((t, i) => (
-                    <div key={i} className={`p-3 rounded-xl border text-xs flex items-center justify-between transition-all ${
-                      t.active ? "bg-violet-400/10 border-violet/40 text-violet-bright" : "bg-panel/40 border-line text-slate-300"
+                    <div key={i} className={`p-3 rounded-lg border text-xs flex items-center justify-between transition-all ${
+                      t.active ? "bg-indigo-500/10 border-indigo-500/30 text-indigo-300 font-medium" : "bg-panel/40 border-line text-slate-300"
                     }`}>
                       <span className="font-medium truncate max-w-[150px]">{t.name}</span>
-                      <span className="font-mono text-2xs">{t.mastery}%</span>
+                      <span className="font-mono text-2xs opacity-80">{t.mastery}%</span>
                     </div>
                   ))}
                 </div>
@@ -89,8 +89,8 @@ export default function LandingPage() {
                 {/* Right: 3D Visual & Grounded Explanation */}
                 <div className="md:col-span-8 space-y-4">
                   <div className="p-4 rounded-xl bg-surface border border-line flex flex-col sm:flex-row items-center gap-4">
-                    <div className="w-28 h-28 rounded-lg bg-gradient-to-tr from-violet-dim/30 to-mint/20 border border-violet/30 flex items-center justify-center shrink-0">
-                      <Box size={40} className="text-violet animate-pulse" />
+                    <div className="w-28 h-28 rounded-lg bg-surface border border-white/[0.08] flex items-center justify-center shrink-0">
+                      <Box size={40} className="text-indigo-400 animate-pulse" />
                     </div>
                     <div>
                       <div className="flex items-center gap-2 mb-1">
@@ -377,22 +377,22 @@ export default function LandingPage() {
       </section>
 
       {/* ── 7. Final Call to Action ───────────────────────────── */}
-      <section className="section border-t border-line/60 bg-gradient-to-b from-transparent to-violet-glow/20">
+      <section className="section border-t border-line bg-surface/30">
         <div className="container-page text-center max-w-3xl">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4">
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 tracking-tight">
             Ready to master your course materials?
           </h2>
-          <p className="text-sm sm:text-base text-muted mb-8 max-w-xl mx-auto">
-            Join students turning passive reading into high-retention active recall. Start free today.
+          <p className="text-sm sm:text-base text-slate-400 mb-8 max-w-xl mx-auto">
+            Join thousands of students turning passive reading into high-retention active recall. Start free today.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/signup">
-              <Button size="lg">
+              <Button size="lg" className="w-full sm:w-auto shadow-md">
                 Start Learning Free <ArrowRight size={18} />
               </Button>
             </Link>
             <Link href="/pricing">
-              <Button variant="ghost" size="lg">
+              <Button variant="ghost" size="lg" className="w-full sm:w-auto text-slate-300 hover:text-white border border-white/[0.08]">
                 View Pricing Plans
               </Button>
             </Link>

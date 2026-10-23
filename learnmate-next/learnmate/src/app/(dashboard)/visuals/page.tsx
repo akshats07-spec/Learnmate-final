@@ -348,13 +348,13 @@ function VisualsContent() {
             <button
               key={v.id}
               onClick={() => loadTopicVisual(v.topic, v.context)}
-              className={`px-4 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-2 ${
+              className={`px-4 py-2 rounded-lg text-xs font-medium whitespace-nowrap transition-all flex items-center gap-2 ${
                 isActive
-                  ? "bg-violet text-white shadow-glow-sm ring-2 ring-violet-bright/50"
-                  : "bg-panel border border-line text-slate-300 hover:text-white hover:border-slate-600"
+                  ? "bg-indigo-600 text-white border border-indigo-400/40 shadow-sm"
+                  : "bg-surface border border-white/[0.08] text-slate-300 hover:text-white hover:border-white/20"
               }`}
             >
-              <Box size={14} className={isActive ? "text-mint" : "text-slate-400"} />
+              <Box size={14} className={isActive ? "text-emerald-300" : "text-slate-400"} />
               <span>{v.topic}</span>
             </button>
           );
@@ -389,12 +389,12 @@ function VisualsContent() {
           </div>
 
           {/* Real-World Analogy Card */}
-          <Card className="bg-purple-950/20 border-purple-500/30 text-purple-200 p-4">
-            <div className="flex items-center gap-2 font-semibold text-xs text-purple-300 mb-1">
-              <Lightbulb size={16} className="text-amber-300" />
+          <Card className="bg-surface border border-white/[0.08] text-slate-300 p-4">
+            <div className="flex items-center gap-2 font-medium text-xs text-slate-200 mb-1">
+              <Lightbulb size={16} className="text-amber-400" />
               <span>Cognitive Analogy</span>
             </div>
-            <p className="text-xs text-purple-100 italic leading-relaxed">
+            <p className="text-xs text-slate-300 italic leading-relaxed">
               "{activeVisual.analogy}"
             </p>
           </Card>

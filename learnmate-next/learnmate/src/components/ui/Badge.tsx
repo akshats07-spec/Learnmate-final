@@ -12,12 +12,12 @@ export function Badge({ className, variant = "violet", children, ...props }: Bad
     amber: "badge-amber",
     rose: "badge-rose",
     sky: "badge-sky",
-    slate: "bg-white/[.06] text-slate-400 border border-line",
+    slate: "badge-slate",
   };
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium tracking-tight",
+        "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-medium tracking-tight",
         variants[variant],
         className
       )}
@@ -27,29 +27,3 @@ export function Badge({ className, variant = "violet", children, ...props }: Bad
     </span>
   );
 }
-
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label?: string;
-  error?: string;
-}
-
-export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, label, error, ...props }, ref) => {
-    return (
-      <div className="w-full space-y-1.5">
-        {label && <label className="block text-xs font-medium text-slate-300">{label}</label>}
-        <input
-          ref={ref}
-          className={cn(
-            "input-base",
-            error && "border-rose-500/50 focus:border-rose-500",
-            className
-          )}
-          {...props}
-        />
-        {error && <p className="text-2xs text-rose-400">{error}</p>}
-      </div>
-    );
-  }
-);
-Input.displayName = "Input";
