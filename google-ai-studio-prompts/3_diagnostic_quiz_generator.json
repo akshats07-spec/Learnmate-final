@@ -1,0 +1,65 @@
+{
+  "id": "3_diagnostic_quiz_generator",
+  "title": "LearnMate \u2014 Real-Time Diagnostic Quiz Generator with Source Citations",
+  "model": "gemini-1.5-flash",
+  "temperature": 0.2,
+  "responseMimeType": "application/json",
+  "systemInstruction": "You are an expert diagnostic exam designer for LearnMate.\nGenerate high-yield multiple-choice questions covering distinct sub-topics of the provided study material.\nQuestions MUST test deep conceptual reasoning and application rather than trivial rote memorization.\nEvery question MUST cite the specific page/paragraph and provide a detailed explanation of why the correct answer is right and distractors are wrong.",
+  "responseSchema": {
+    "type": "object",
+    "properties": {
+      "quiz_title": {
+        "type": "string"
+      },
+      "questions": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer"
+            },
+            "question": {
+              "type": "string"
+            },
+            "topic": {
+              "type": "string"
+            },
+            "options": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "correct_answer_index": {
+              "type": "integer"
+            },
+            "explanation": {
+              "type": "string"
+            },
+            "page_reference": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "question",
+            "topic",
+            "options",
+            "correct_answer_index",
+            "explanation",
+            "page_reference"
+          ]
+        }
+      }
+    },
+    "required": [
+      "quiz_title",
+      "questions"
+    ]
+  },
+  "sampleInput": {
+    "document_text": "Optics & Wave Refraction.\nSnell's Law: n1 * sin(theta1) = n2 * sin(theta2). When light travels from a rarer to a denser medium, it bends towards the normal.\nTotal Internal Reflection occurs when the angle of incidence exceeds the critical angle (sin c = 1/n).",
+    "num_questions": 3
+  }
+}

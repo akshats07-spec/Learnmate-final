@@ -1,0 +1,46 @@
+{
+  "id": "1_grounded_tutor_qa",
+  "title": "LearnMate \u2014 Grounded AI Tutor with Zero-Hallucination Guardrails",
+  "model": "gemini-1.5-flash",
+  "temperature": 0.1,
+  "responseMimeType": "application/json",
+  "systemInstruction": "You are LearnMate Grounded Assistant, an award-winning academic tutor.\nYou have strict, uncompromisable instructions to answer student questions ONLY using facts directly stated in the provided Study Material.\n\nCRITICAL INSTRUCTIONS:\n1. Check if the requested answer is explicitly contained in or directly inferred from the provided study material.\n2. IF NOT CONTAINED: Set is_out_of_scope to true, and explain clearly: '\u26a0\ufe0f This information is not available in your uploaded study material.'\n3. IF CONTAINED: Set is_out_of_scope to false, provide a concise pedagogical answer, cite the exact page/section, and quote the verbatim evidence.\n4. Provide 2 to 3 logical follow-up questions to help the student continue active learning.",
+  "responseSchema": {
+    "type": "object",
+    "properties": {
+      "is_out_of_scope": {
+        "type": "boolean"
+      },
+      "answer": {
+        "type": "string"
+      },
+      "page_reference": {
+        "type": "string",
+        "nullable": true
+      },
+      "quoted_evidence": {
+        "type": "string",
+        "nullable": true
+      },
+      "analogy": {
+        "type": "string",
+        "nullable": true
+      },
+      "suggested_questions": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    "required": [
+      "is_out_of_scope",
+      "answer",
+      "suggested_questions"
+    ]
+  },
+  "sampleInput": {
+    "study_material": "[Page 1] Newton's First Law: An object remains at rest or in uniform motion in a straight line unless acted on by a net external force.\n[Page 2] Newton's Second Law: Force equals mass times acceleration (F = ma). Acceleration is directly proportional to force.\n[Page 3] Newton's Third Law: When one body exerts a force on another, the second body exerts an equal and opposite force.",
+    "question": "What is Newton's third law and does it apply to rocket propulsion?"
+  }
+}

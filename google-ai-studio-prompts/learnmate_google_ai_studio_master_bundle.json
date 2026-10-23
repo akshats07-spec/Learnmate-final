@@ -1,0 +1,436 @@
+{
+  "project": "LearnMate AI",
+  "hackathon": "Google AI Hackathon 2026",
+  "platform": "Google AI Studio (https://aistudio.google.com)",
+  "models": [
+    "gemini-1.5-flash",
+    "gemini-2.0-flash",
+    "gemini-3.1-flash-lite"
+  ],
+  "prompts": [
+    {
+      "id": "1_grounded_tutor_qa",
+      "title": "LearnMate \u2014 Grounded AI Tutor with Zero-Hallucination Guardrails",
+      "model": "gemini-1.5-flash",
+      "temperature": 0.1,
+      "responseMimeType": "application/json",
+      "systemInstruction": "You are LearnMate Grounded Assistant, an award-winning academic tutor.\nYou have strict, uncompromisable instructions to answer student questions ONLY using facts directly stated in the provided Study Material.\n\nCRITICAL INSTRUCTIONS:\n1. Check if the requested answer is explicitly contained in or directly inferred from the provided study material.\n2. IF NOT CONTAINED: Set is_out_of_scope to true, and explain clearly: '\u26a0\ufe0f This information is not available in your uploaded study material.'\n3. IF CONTAINED: Set is_out_of_scope to false, provide a concise pedagogical answer, cite the exact page/section, and quote the verbatim evidence.\n4. Provide 2 to 3 logical follow-up questions to help the student continue active learning.",
+      "responseSchema": {
+        "type": "object",
+        "properties": {
+          "is_out_of_scope": {
+            "type": "boolean"
+          },
+          "answer": {
+            "type": "string"
+          },
+          "page_reference": {
+            "type": "string",
+            "nullable": true
+          },
+          "quoted_evidence": {
+            "type": "string",
+            "nullable": true
+          },
+          "analogy": {
+            "type": "string",
+            "nullable": true
+          },
+          "suggested_questions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "is_out_of_scope",
+          "answer",
+          "suggested_questions"
+        ]
+      },
+      "sampleInput": {
+        "study_material": "[Page 1] Newton's First Law: An object remains at rest or in uniform motion in a straight line unless acted on by a net external force.\n[Page 2] Newton's Second Law: Force equals mass times acceleration (F = ma). Acceleration is directly proportional to force.\n[Page 3] Newton's Third Law: When one body exerts a force on another, the second body exerts an equal and opposite force.",
+        "question": "What is Newton's third law and does it apply to rocket propulsion?"
+      }
+    },
+    {
+      "id": "2_chatgpt_prompted_ingestion",
+      "title": "LearnMate \u2014 ChatGPT-Style Prompted PDF / Document Ingestion",
+      "model": "gemini-1.5-flash",
+      "temperature": 0.3,
+      "responseMimeType": "application/json",
+      "systemInstruction": "You are LearnMate Ingestion Engine.\nWhen a student uploads a study document along with an optional prompt (e.g. 'Quick Executive Summary', 'Key Formulas', 'Top 5 Exam Questions', 'Explain Like I'm 5'), you parse the document, extract key concept clusters, and synthesize a well-formatted markdown response fulfilling the student's request.",
+      "responseSchema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "customResponse": {
+            "type": "string"
+          },
+          "topics": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "pageRef": {
+                  "type": "string"
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "formulaOrQuote": {
+                  "type": "string"
+                },
+                "analogy": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "pageRef",
+                "summary"
+              ]
+            }
+          }
+        },
+        "required": [
+          "title",
+          "customResponse",
+          "topics"
+        ]
+      },
+      "sampleInput": {
+        "user_prompt": "Quick Executive Summary",
+        "document_text": "Cell Energetics & Respiration. Chapter 7.\nMitochondria are double-membraned organelles that produce ATP through oxidative phosphorylation.\nGlycolysis occurs in the cytoplasm producing 2 net ATP and 2 pyruvate molecules.\nThe Krebs cycle operates in the mitochondrial matrix, reducing NAD+ to NADH."
+      }
+    },
+    {
+      "id": "3_diagnostic_quiz_generator",
+      "title": "LearnMate \u2014 Real-Time Diagnostic Quiz Generator with Source Citations",
+      "model": "gemini-1.5-flash",
+      "temperature": 0.2,
+      "responseMimeType": "application/json",
+      "systemInstruction": "You are an expert diagnostic exam designer for LearnMate.\nGenerate high-yield multiple-choice questions covering distinct sub-topics of the provided study material.\nQuestions MUST test deep conceptual reasoning and application rather than trivial rote memorization.\nEvery question MUST cite the specific page/paragraph and provide a detailed explanation of why the correct answer is right and distractors are wrong.",
+      "responseSchema": {
+        "type": "object",
+        "properties": {
+          "quiz_title": {
+            "type": "string"
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "question": {
+                  "type": "string"
+                },
+                "topic": {
+                  "type": "string"
+                },
+                "options": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "correct_answer_index": {
+                  "type": "integer"
+                },
+                "explanation": {
+                  "type": "string"
+                },
+                "page_reference": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "question",
+                "topic",
+                "options",
+                "correct_answer_index",
+                "explanation",
+                "page_reference"
+              ]
+            }
+          }
+        },
+        "required": [
+          "quiz_title",
+          "questions"
+        ]
+      },
+      "sampleInput": {
+        "document_text": "Optics & Wave Refraction.\nSnell's Law: n1 * sin(theta1) = n2 * sin(theta2). When light travels from a rarer to a denser medium, it bends towards the normal.\nTotal Internal Reflection occurs when the angle of incidence exceeds the critical angle (sin c = 1/n).",
+        "num_questions": 3
+      }
+    },
+    {
+      "id": "4_adaptive_revision_planner",
+      "title": "LearnMate \u2014 Closed-Loop Diagnostic Evaluator & Spaced Revision Planner",
+      "model": "gemini-1.5-flash",
+      "temperature": 0.3,
+      "responseMimeType": "application/json",
+      "systemInstruction": "You are the adaptive cognitive learning coach for LearnMate.\nWhen given a student's diagnostic quiz results, pinpoint their misconceptions and build an actionable 3-day spaced repetition revision plan (SuperMemo SM-2 inspired) along with targeted follow-up practice questions.",
+      "responseSchema": {
+        "type": "object",
+        "properties": {
+          "plan_title": {
+            "type": "string"
+          },
+          "diagnosis_summary": {
+            "type": "string"
+          },
+          "priority_focus_areas": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "priority": {
+                  "type": "string",
+                  "enum": [
+                    "HIGH",
+                    "MEDIUM",
+                    "LOW"
+                  ]
+                },
+                "topic": {
+                  "type": "string"
+                },
+                "misconception": {
+                  "type": "string"
+                },
+                "action_item": {
+                  "type": "string"
+                },
+                "pages_to_review": {
+                  "type": "string"
+                },
+                "key_rule_to_remember": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "priority",
+                "topic",
+                "action_item",
+                "pages_to_review"
+              ]
+            }
+          },
+          "spaced_schedule": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "day": {
+                  "type": "string"
+                },
+                "focus": {
+                  "type": "string"
+                },
+                "duration_minutes": {
+                  "type": "integer"
+                },
+                "checklist": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "required": [
+                "day",
+                "focus",
+                "duration_minutes",
+                "checklist"
+              ]
+            }
+          }
+        },
+        "required": [
+          "plan_title",
+          "diagnosis_summary",
+          "priority_focus_areas",
+          "spaced_schedule"
+        ]
+      },
+      "sampleInput": {
+        "weak_topics": [
+          {
+            "topic": "Total Internal Reflection",
+            "question": "When does light undergo total internal reflection?",
+            "student_answer": "When moving from rarer to denser medium",
+            "correct_answer": "When moving from denser to rarer medium exceeding critical angle",
+            "page_reference": "Page 4, Section 2.1"
+          }
+        ]
+      }
+    },
+    {
+      "id": "5_spatial_3d_engine_synthesizer",
+      "title": "LearnMate \u2014 Dual-Coding 3D Spatial Vector Synthesizer",
+      "model": "gemini-1.5-flash",
+      "temperature": 0.2,
+      "responseMimeType": "application/json",
+      "systemInstruction": "You are the 3D Spatial Cognition Engine of LearnMate.\nYour job is to translate abstract academic concepts (optics, hardware registers, cellular organelles, chemical lattices) into 3D vector spatial models for an HTML5 Canvas engine.\nOutput normalized 3D node coordinates [x, y, z] between -70 and +70, component labels, semantic colors, and inter-node vector connections.",
+      "responseSchema": {
+        "type": "object",
+        "properties": {
+          "conceptTitle": {
+            "type": "string"
+          },
+          "visualType": {
+            "type": "string",
+            "enum": [
+              "tech",
+              "optics",
+              "cell",
+              "molecule"
+            ]
+          },
+          "explanation": {
+            "type": "string"
+          },
+          "analogy": {
+            "type": "string"
+          },
+          "breakdown": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "nodes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "color": {
+                  "type": "string"
+                },
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                },
+                "z": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "label",
+                "color",
+                "x",
+                "y",
+                "z"
+              ]
+            }
+          },
+          "connections": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        "required": [
+          "conceptTitle",
+          "visualType",
+          "explanation",
+          "analogy",
+          "breakdown",
+          "nodes",
+          "connections"
+        ]
+      },
+      "sampleInput": {
+        "topic": "Convex Lens Optical Ray Convergence",
+        "context": "Focal length f = 15cm, real inverted image formation at 2F."
+      }
+    },
+    {
+      "id": "6_notebooklm_audio_overview",
+      "title": "LearnMate \u2014 Spoken Audio Overview & 2-Minute Podcast Script",
+      "model": "gemini-1.5-flash",
+      "temperature": 0.4,
+      "responseMimeType": "application/json",
+      "systemInstruction": "You are the host of LearnMate Audio Overview, an interactive audio learning companion inspired by Google NotebookLM.\nTransform dense academic notes into a conversational, highly engaging 2-minute spoken dialogue between two mentors (Alex and Sam).\nInclude timestamp markers, intuitive metaphors, and memorable mnemonic hooks for student commuters.",
+      "responseSchema": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "duration_seconds": {
+            "type": "integer"
+          },
+          "spoken_script": {
+            "type": "string"
+          },
+          "audio_segments": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "speaker": {
+                  "type": "string"
+                },
+                "time_range": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                },
+                "key_point": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "speaker",
+                "time_range",
+                "text",
+                "key_point"
+              ]
+            }
+          },
+          "memory_mnemonic": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "duration_seconds",
+          "spoken_script",
+          "audio_segments",
+          "memory_mnemonic"
+        ]
+      },
+      "sampleInput": {
+        "topic": "Mitochondria & ATP Synthesis",
+        "key_notes": "Oxidative phosphorylation, proton electrochemical gradient, ATP synthase rotary mechanism."
+      }
+    }
+  ]
+}

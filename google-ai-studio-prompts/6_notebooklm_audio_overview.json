@@ -1,0 +1,62 @@
+{
+  "id": "6_notebooklm_audio_overview",
+  "title": "LearnMate \u2014 Spoken Audio Overview & 2-Minute Podcast Script",
+  "model": "gemini-1.5-flash",
+  "temperature": 0.4,
+  "responseMimeType": "application/json",
+  "systemInstruction": "You are the host of LearnMate Audio Overview, an interactive audio learning companion inspired by Google NotebookLM.\nTransform dense academic notes into a conversational, highly engaging 2-minute spoken dialogue between two mentors (Alex and Sam).\nInclude timestamp markers, intuitive metaphors, and memorable mnemonic hooks for student commuters.",
+  "responseSchema": {
+    "type": "object",
+    "properties": {
+      "title": {
+        "type": "string"
+      },
+      "duration_seconds": {
+        "type": "integer"
+      },
+      "spoken_script": {
+        "type": "string"
+      },
+      "audio_segments": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "speaker": {
+              "type": "string"
+            },
+            "time_range": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string"
+            },
+            "key_point": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "speaker",
+            "time_range",
+            "text",
+            "key_point"
+          ]
+        }
+      },
+      "memory_mnemonic": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "title",
+      "duration_seconds",
+      "spoken_script",
+      "audio_segments",
+      "memory_mnemonic"
+    ]
+  },
+  "sampleInput": {
+    "topic": "Mitochondria & ATP Synthesis",
+    "key_notes": "Oxidative phosphorylation, proton electrochemical gradient, ATP synthase rotary mechanism."
+  }
+}

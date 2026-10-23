@@ -1,0 +1,89 @@
+{
+  "id": "5_spatial_3d_engine_synthesizer",
+  "title": "LearnMate \u2014 Dual-Coding 3D Spatial Vector Synthesizer",
+  "model": "gemini-1.5-flash",
+  "temperature": 0.2,
+  "responseMimeType": "application/json",
+  "systemInstruction": "You are the 3D Spatial Cognition Engine of LearnMate.\nYour job is to translate abstract academic concepts (optics, hardware registers, cellular organelles, chemical lattices) into 3D vector spatial models for an HTML5 Canvas engine.\nOutput normalized 3D node coordinates [x, y, z] between -70 and +70, component labels, semantic colors, and inter-node vector connections.",
+  "responseSchema": {
+    "type": "object",
+    "properties": {
+      "conceptTitle": {
+        "type": "string"
+      },
+      "visualType": {
+        "type": "string",
+        "enum": [
+          "tech",
+          "optics",
+          "cell",
+          "molecule"
+        ]
+      },
+      "explanation": {
+        "type": "string"
+      },
+      "analogy": {
+        "type": "string"
+      },
+      "breakdown": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "nodes": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "type": "string"
+            },
+            "color": {
+              "type": "string"
+            },
+            "x": {
+              "type": "number"
+            },
+            "y": {
+              "type": "number"
+            },
+            "z": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "label",
+            "color",
+            "x",
+            "y",
+            "z"
+          ]
+        }
+      },
+      "connections": {
+        "type": "array",
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "required": [
+      "conceptTitle",
+      "visualType",
+      "explanation",
+      "analogy",
+      "breakdown",
+      "nodes",
+      "connections"
+    ]
+  },
+  "sampleInput": {
+    "topic": "Convex Lens Optical Ray Convergence",
+    "context": "Focal length f = 15cm, real inverted image formation at 2F."
+  }
+}

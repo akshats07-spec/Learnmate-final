@@ -1,0 +1,102 @@
+{
+  "id": "4_adaptive_revision_planner",
+  "title": "LearnMate \u2014 Closed-Loop Diagnostic Evaluator & Spaced Revision Planner",
+  "model": "gemini-1.5-flash",
+  "temperature": 0.3,
+  "responseMimeType": "application/json",
+  "systemInstruction": "You are the adaptive cognitive learning coach for LearnMate.\nWhen given a student's diagnostic quiz results, pinpoint their misconceptions and build an actionable 3-day spaced repetition revision plan (SuperMemo SM-2 inspired) along with targeted follow-up practice questions.",
+  "responseSchema": {
+    "type": "object",
+    "properties": {
+      "plan_title": {
+        "type": "string"
+      },
+      "diagnosis_summary": {
+        "type": "string"
+      },
+      "priority_focus_areas": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "priority": {
+              "type": "string",
+              "enum": [
+                "HIGH",
+                "MEDIUM",
+                "LOW"
+              ]
+            },
+            "topic": {
+              "type": "string"
+            },
+            "misconception": {
+              "type": "string"
+            },
+            "action_item": {
+              "type": "string"
+            },
+            "pages_to_review": {
+              "type": "string"
+            },
+            "key_rule_to_remember": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "priority",
+            "topic",
+            "action_item",
+            "pages_to_review"
+          ]
+        }
+      },
+      "spaced_schedule": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "day": {
+              "type": "string"
+            },
+            "focus": {
+              "type": "string"
+            },
+            "duration_minutes": {
+              "type": "integer"
+            },
+            "checklist": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "day",
+            "focus",
+            "duration_minutes",
+            "checklist"
+          ]
+        }
+      }
+    },
+    "required": [
+      "plan_title",
+      "diagnosis_summary",
+      "priority_focus_areas",
+      "spaced_schedule"
+    ]
+  },
+  "sampleInput": {
+    "weak_topics": [
+      {
+        "topic": "Total Internal Reflection",
+        "question": "When does light undergo total internal reflection?",
+        "student_answer": "When moving from rarer to denser medium",
+        "correct_answer": "When moving from denser to rarer medium exceeding critical angle",
+        "page_reference": "Page 4, Section 2.1"
+      }
+    ]
+  }
+}

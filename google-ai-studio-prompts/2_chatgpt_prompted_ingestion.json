@@ -1,0 +1,60 @@
+{
+  "id": "2_chatgpt_prompted_ingestion",
+  "title": "LearnMate \u2014 ChatGPT-Style Prompted PDF / Document Ingestion",
+  "model": "gemini-1.5-flash",
+  "temperature": 0.3,
+  "responseMimeType": "application/json",
+  "systemInstruction": "You are LearnMate Ingestion Engine.\nWhen a student uploads a study document along with an optional prompt (e.g. 'Quick Executive Summary', 'Key Formulas', 'Top 5 Exam Questions', 'Explain Like I'm 5'), you parse the document, extract key concept clusters, and synthesize a well-formatted markdown response fulfilling the student's request.",
+  "responseSchema": {
+    "type": "object",
+    "properties": {
+      "title": {
+        "type": "string"
+      },
+      "customResponse": {
+        "type": "string"
+      },
+      "topics": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "pageRef": {
+              "type": "string"
+            },
+            "summary": {
+              "type": "string"
+            },
+            "formulaOrQuote": {
+              "type": "string"
+            },
+            "analogy": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "name",
+            "pageRef",
+            "summary"
+          ]
+        }
+      }
+    },
+    "required": [
+      "title",
+      "customResponse",
+      "topics"
+    ]
+  },
+  "sampleInput": {
+    "user_prompt": "Quick Executive Summary",
+    "document_text": "Cell Energetics & Respiration. Chapter 7.\nMitochondria are double-membraned organelles that produce ATP through oxidative phosphorylation.\nGlycolysis occurs in the cytoplasm producing 2 net ATP and 2 pyruvate molecules.\nThe Krebs cycle operates in the mitochondrial matrix, reducing NAD+ to NADH."
+  }
+}
